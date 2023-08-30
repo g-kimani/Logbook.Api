@@ -41,10 +41,13 @@ namespace Logbook.AppApi.Services
             return _mapper.Map<List<ProjectResponseDto>>(projects);
         }
 
-        public async Task<ProjectResponseDto> GetProjectById(string userId, int projectId )
+        public async Task<ProjectFullResponseDto> GetProjectById(string userId, int projectId )
         {
             var project = await _context.Projects
                                         .Where(p => p.UserId == userId && p.ProjectId == projectId)
+                                        .Include(p => p.Logs)
+                                        .Include(p => p.Goals)
+                                        .Include(p => p.Tasks)
                                         .FirstOrDefaultAsync();
 
             if (project == null)
@@ -52,7 +55,7 @@ namespace Logbook.AppApi.Services
                 throw new NotFoundException( $"Project {projectId}" );
             }
 
-            return _mapper.Map<ProjectResponseDto>( project );
+            return _mapper.Map<ProjectFullResponseDto>( project );
         }
 
         public async Task<ProjectResponseDto> UpdateProject(string userId, int projectId, ProjectUpdateDto data)
@@ -73,7 +76,7 @@ namespace Logbook.AppApi.Services
             }
 
             project.Title = data.Title;
-            project.Description = data.Description;
+            project.Content = data.Content;
             project.DueDate = data.DueDate;
 
             await _context.SaveChangesAsync();

@@ -1,13 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace Logbook.AppApi.DTOs
 {
     public class UserLoginDto
     {
-        [Required]
-        public string Email { get; set; }
-        [Required]
-        public string Password { get; set; }
+        public required string Email { get; set; }
+        public required string Password { get; set; }
 
     }
 }

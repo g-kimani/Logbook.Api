@@ -75,13 +75,13 @@ namespace Logbook.AppApi.Controllers
             var userExists = await _userManager.FindByEmailAsync( user.Email );
             if (userExists != null && await _userManager.CheckPasswordAsync( userExists, user.Password ))
             {
-                var tokenValue = await GenerateJWTToken( userExists );
+                var tokenValue = GenerateJWTToken( userExists );
                 return Ok(tokenValue);
             }
             return Unauthorized();
         }
 
-        private async Task<AuthResultDto> GenerateJWTToken( ApplicationUser user )
+        private AuthResultDto GenerateJWTToken( ApplicationUser user )
         {
             var authClaims = new List<Claim>()
             {

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Logbook.AppApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230816151327_AddedEntityTables")]
-    partial class AddedEntityTables
+    [Migration("20230829121503_UsedModelBuilder")]
+    partial class UsedModelBuilder
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -118,6 +118,9 @@ namespace Logbook.AppApi.Migrations
                     b.Property<DateTime>("LastActiveDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -135,11 +138,11 @@ namespace Logbook.AppApi.Migrations
 
             modelBuilder.Entity("Logbook.AppApi.Data.Models.ProjectGoal", b =>
                 {
-                    b.Property<int>("ProjectGoalId")
+                    b.Property<int>("GoalId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProjectGoalId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GoalId"));
 
                     b.Property<DateTime>("CompletedDate")
                         .HasColumnType("datetime2");
@@ -173,7 +176,7 @@ namespace Logbook.AppApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("ProjectGoalId");
+                    b.HasKey("GoalId");
 
                     b.HasIndex("ProjectId");
 
@@ -184,11 +187,11 @@ namespace Logbook.AppApi.Migrations
 
             modelBuilder.Entity("Logbook.AppApi.Data.Models.ProjectLog", b =>
                 {
-                    b.Property<int>("ProjectLogId")
+                    b.Property<int>("LogId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProjectLogId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LogId"));
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
@@ -213,7 +216,7 @@ namespace Logbook.AppApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("ProjectLogId");
+                    b.HasKey("LogId");
 
                     b.HasIndex("ProjectId");
 
@@ -224,11 +227,11 @@ namespace Logbook.AppApi.Migrations
 
             modelBuilder.Entity("Logbook.AppApi.Data.Models.ProjectTask", b =>
                 {
-                    b.Property<int>("ProjectTaskId")
+                    b.Property<int>("TaskId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProjectTaskId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskId"));
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
@@ -256,7 +259,7 @@ namespace Logbook.AppApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("ProjectTaskId");
+                    b.HasKey("TaskId");
 
                     b.HasIndex("ProjectId");
 
@@ -400,15 +403,15 @@ namespace Logbook.AppApi.Migrations
 
             modelBuilder.Entity("ProjectLogProjectTask", b =>
                 {
-                    b.Property<int>("LogsProjectLogId")
+                    b.Property<int>("LogsLogId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TasksProjectTaskId")
+                    b.Property<int>("TasksTaskId")
                         .HasColumnType("int");
 
-                    b.HasKey("LogsProjectLogId", "TasksProjectTaskId");
+                    b.HasKey("LogsLogId", "TasksTaskId");
 
-                    b.HasIndex("TasksProjectTaskId");
+                    b.HasIndex("TasksTaskId");
 
                     b.ToTable("ProjectLogProjectTask");
                 });
@@ -427,9 +430,9 @@ namespace Logbook.AppApi.Migrations
             modelBuilder.Entity("Logbook.AppApi.Data.Models.ProjectGoal", b =>
                 {
                     b.HasOne("Logbook.AppApi.Data.Models.Project", "Project")
-                        .WithMany()
+                        .WithMany("Goals")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Logbook.AppApi.Data.Models.ApplicationUser", "User")
@@ -446,9 +449,9 @@ namespace Logbook.AppApi.Migrations
             modelBuilder.Entity("Logbook.AppApi.Data.Models.ProjectLog", b =>
                 {
                     b.HasOne("Logbook.AppApi.Data.Models.Project", "Project")
-                        .WithMany()
+                        .WithMany("Logs")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Logbook.AppApi.Data.Models.ApplicationUser", "User")
@@ -465,9 +468,9 @@ namespace Logbook.AppApi.Migrations
             modelBuilder.Entity("Logbook.AppApi.Data.Models.ProjectTask", b =>
                 {
                     b.HasOne("Logbook.AppApi.Data.Models.Project", "Project")
-                        .WithMany()
+                        .WithMany("Tasks")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Logbook.AppApi.Data.Models.ApplicationUser", "User")
@@ -536,15 +539,24 @@ namespace Logbook.AppApi.Migrations
                 {
                     b.HasOne("Logbook.AppApi.Data.Models.ProjectLog", null)
                         .WithMany()
-                        .HasForeignKey("LogsProjectLogId")
+                        .HasForeignKey("LogsLogId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Logbook.AppApi.Data.Models.ProjectTask", null)
                         .WithMany()
-                        .HasForeignKey("TasksProjectTaskId")
+                        .HasForeignKey("TasksTaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Logbook.AppApi.Data.Models.Project", b =>
+                {
+                    b.Navigation("Goals");
+
+                    b.Navigation("Logs");
+
+                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }

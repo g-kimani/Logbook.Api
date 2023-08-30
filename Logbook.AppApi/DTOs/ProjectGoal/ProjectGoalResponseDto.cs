@@ -2,7 +2,7 @@
 {
     public class ProjectGoalResponseDto
     {
-        public int ProjectGoalId { get; set; }
+        public int GoalId { get; set; }
         public int ProjectId { get; set; }
         public required string Title { get; set; }
         public string? Content { get; set; }

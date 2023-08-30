@@ -22,12 +22,10 @@ namespace Logbook.AppApi.Controllers
     [ApiController]
     public class ProjectsController : BaseController
     {
-        private readonly AppDbContext _context;
         private readonly IProjectService _projectService;
 
-        public ProjectsController( AppDbContext context, IProjectService projectService, ILogger<ProjectsController> logger ) : base( logger )
+        public ProjectsController( IProjectService projectService, ILogger<ProjectsController> logger ) : base( logger )
         {
-            _context = context;
             _projectService = projectService;
         }
 
@@ -59,7 +57,7 @@ namespace Logbook.AppApi.Controllers
 
         // GET: api/Projects/5
         [HttpGet( "{id}" )]
-        [ProducesResponseType( 200, Type = typeof( ProjectResponseDto ) )]
+        [ProducesResponseType( 200, Type = typeof( ProjectFullResponseDto ) )]
         public async Task<IActionResult> GetProject( int id )
         {
             return await ExecuteWithErrorHandling( async ( userId ) =>
