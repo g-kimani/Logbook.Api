@@ -34,16 +34,43 @@ namespace Logbook.AppApi.Services
             return response;
         }
 
-        public async Task<List<ProjectResponseDto>> GetAllProjects(string userId)
+        public async Task<List<ProjectShortResponseDto>> GetAllProjects(string userId, ProjectRequestQuery query )
         {
             var projects = await _context.Projects.Where(p => p.UserId == userId).AsTracking().ToListAsync();
-            // TODO : Find a more approachable way to do updates
-            projects.ForEach( project =>
+
+            switch (query.SortBy)
             {
-                project.LastActiveDate = DateTime.UtcNow;
-            } );
+                case "lastActive":
+                    projects = projects.OrderBy( p => p.LastActiveDate ).ToList();
+                    break;
+                case "status":
+                    projects = projects.OrderBy( p => p.Status ).ToList();
+                    break;
+                case "dueDate":
+                    projects = projects.OrderBy( p => p.DueDate ).ToList();
+                    break;
+                case "created":
+                    projects = projects.OrderBy( p => p.CreatedDate ).ToList();
+                    break;
+                default:
+                    projects = projects.OrderBy( p => p.CreatedDate ).ToList();
+                    break;
+            }
+
+            if (!query.IsAscending)
+            {
+                projects.Reverse();
+            }
+
+            // TODO : Maybe add an option for filtering by status
+
+            // TODO : Find a more approachable way to do updates
+            //projects.ForEach( project =>
+            //{
+            //    project.LastActiveDate = DateTime.UtcNow;
+            //} );
             await _context.SaveChangesAsync();
-            return _mapper.Map<List<ProjectResponseDto>>(projects);
+            return _mapper.Map<List<ProjectShortResponseDto>>(projects);
         }
 
         public async Task<ProjectFullResponseDto> GetProjectById(string userId, int projectId )

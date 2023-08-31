@@ -32,11 +32,11 @@ namespace Logbook.AppApi.Controllers
         // GET: api/Projects
         [HttpGet]
         [ProducesResponseType( 200, Type = typeof( IEnumerable<ProjectResponseDto> ) )]
-        public async Task<IActionResult> GetProjects()
+        public async Task<IActionResult> GetProjects( [FromQuery] ProjectRequestQuery query)
         {
             return await ExecuteWithErrorHandling( async ( userId ) =>
             {
-                var response = await _projectService.GetAllProjects( userId );
+                var response = await _projectService.GetAllProjects( userId, query );
                 return Ok( response );
             } );
         }

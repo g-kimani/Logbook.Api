@@ -18,6 +18,7 @@ namespace Logbook.AppApi.MapperProfiles
             CreateMap<ProjectLog,  ProjectLogResponseDto>();
             CreateMap<ProjectGoal, ProjectGoalResponseDto>();
             CreateMap<ProjectTask, ProjectTaskResponseDto>();
+            CreateMap<Project, ProjectShortResponseDto>();
         }
     }
 }

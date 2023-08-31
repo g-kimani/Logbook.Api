@@ -1,5 +1,4 @@
 using Logbook.AppApi.Data;
-using Logbook.AppApi.Data.Filters;
 using Logbook.AppApi.Data.Models;
 using Logbook.AppApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
