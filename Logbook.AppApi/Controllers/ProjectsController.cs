@@ -14,6 +14,7 @@ using Logbook.AppApi.Services;
 using Logbook.AppApi.Contracts.Services;
 using Logbook.AppApi.DTOs.Project;
 using System.Runtime.InteropServices;
+using Logbook.AppApi.DTOs.ProjectLog;
 
 namespace Logbook.AppApi.Controllers
 {
@@ -83,12 +84,24 @@ namespace Logbook.AppApi.Controllers
 
         // DELETE: api/Projects/5
         [HttpDelete( "{id}" )]
+        [ProducesResponseType(204)]
         public async Task<IActionResult> DeleteProject( int id )
         {
             return await ExecuteWithErrorHandling( async ( userId ) =>
             {
                 await _projectService.DeleteProject( userId, id );
                 return NoContent();
+            } );
+        }
+
+        [HttpGet("{id}/logs")]
+        [ProducesResponseType(200, Type = typeof( IEnumerable<ProjectLogResponseDto>))]
+        public async Task<IActionResult> GetProjectLogs(int id, [FromQuery] ProjectLogRequestQuery query )
+        {
+            return await ExecuteWithErrorHandling( async ( userId ) =>
+            {
+                var response = await _projectService.GetProjectLogs( userId, id, query );
+                return Ok( response );
             } );
         }
 

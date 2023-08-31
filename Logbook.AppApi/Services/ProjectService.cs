@@ -5,6 +5,7 @@ using Logbook.AppApi.Data;
 using Logbook.AppApi.Data.Models;
 using Logbook.AppApi.DTOs;
 using Logbook.AppApi.DTOs.Project;
+using Logbook.AppApi.DTOs.ProjectLog;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -145,6 +146,41 @@ namespace Logbook.AppApi.Services
             {
                 throw new NotFoundException( $"Project {projectId}" );
             }
+        }
+
+        public async Task<List<ProjectLogResponseDto>> GetProjectLogs( string userId, int projectId, ProjectLogRequestQuery query )
+        {
+            var project = await _context.Projects
+                                    .Where( p => p.UserId == userId && p.ProjectId == projectId )
+                                    .Include(p => p.Logs)
+                                    .FirstOrDefaultAsync();
+            if (project == null)
+            {
+                throw new NotFoundException( $"Project {projectId} Not found" );
+            }
+
+            var logs = project.Logs.ToList();
+            switch (query.SortBy)
+            {
+                // NOTE: EntryDate and CreatedDate might be the same thing?
+                case "created":
+                    logs = logs.OrderBy( l => l.CreatedDate ).ToList();
+                    break;
+                case "title":
+                    logs = logs.OrderBy( l => l.Title ).ToList();
+                    break;
+                default:
+                    logs = logs.OrderBy( l => l.EntryDate ).ToList();
+                    break;
+            }
+            if (query.Order == "desc")
+            {
+                logs.Reverse();
+            }
+
+            var result = _mapper.Map<List<ProjectLogResponseDto>>(logs);
+            return result;
+
         }
 
     }

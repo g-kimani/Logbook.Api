@@ -10,6 +10,5 @@ namespace Logbook.AppApi.DTOs.Project
         public DateTime? DueDate { get; set; }
         public ProjectStatus Status { get; set; }
         public DateTime CreatedDate { get; set; }
-        public DateTime LastActiveDate { get; set; }
     }
 }
