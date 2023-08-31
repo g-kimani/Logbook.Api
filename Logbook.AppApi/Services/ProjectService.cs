@@ -36,8 +36,13 @@ namespace Logbook.AppApi.Services
 
         public async Task<List<ProjectResponseDto>> GetAllProjects(string userId)
         {
-            var projects = await _context.Projects.Where(p => p.UserId == userId).ToListAsync();
-
+            var projects = await _context.Projects.Where(p => p.UserId == userId).AsTracking().ToListAsync();
+            // TODO : Find a more approachable way to do updates
+            projects.ForEach( project =>
+            {
+                project.LastActiveDate = DateTime.UtcNow;
+            } );
+            await _context.SaveChangesAsync();
             return _mapper.Map<List<ProjectResponseDto>>(projects);
         }
 
@@ -48,12 +53,30 @@ namespace Logbook.AppApi.Services
                                         .Include(p => p.Logs)
                                         .Include(p => p.Goals)
                                         .Include(p => p.Tasks)
+                                        .AsTracking()
                                         .FirstOrDefaultAsync();
+
 
             if (project == null)
             {
                 throw new NotFoundException( $"Project {projectId}" );
             }
+
+            var lastActive = DateTime.UtcNow;
+            project.LastActiveDate = lastActive;
+            project.Logs.ForEach( p =>
+            {
+                p.LastActiveDate = lastActive;
+            } );
+            project.Goals.ForEach( p =>
+            {
+                p.LastActiveDate = lastActive;
+            } );
+            project.Tasks.ForEach( p =>
+            {
+                p.LastActiveDate = lastActive;
+            } );
+            await _context.SaveChangesAsync();
 
             return _mapper.Map<ProjectFullResponseDto>( project );
         }
@@ -78,6 +101,7 @@ namespace Logbook.AppApi.Services
             project.Title = data.Title;
             project.Content = data.Content;
             project.DueDate = data.DueDate;
+            project.LastActiveDate = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
 

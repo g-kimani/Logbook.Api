@@ -1,6 +1,6 @@
 ﻿namespace Logbook.AppApi.DTOs
 {
-    public class ProjectCreateDto
+    public class ProjectCreateDto : BaseDto
     {
         public required string Title { get; set; }
         public string? Description { get; set; }

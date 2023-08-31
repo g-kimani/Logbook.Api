@@ -4,6 +4,7 @@ using System.Security.Claims;
 
 namespace Logbook.AppApi.Controllers
 {
+    // TODO: When more than one child put ApiController attribute here 
     public class BaseController : ControllerBase
     {
         protected ILogger Logger { get; set; }

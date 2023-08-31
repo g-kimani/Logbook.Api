@@ -1,6 +1,6 @@
 ﻿namespace Logbook.AppApi.DTOs.ProjectTask
 {
-    public class ProjectTaskResponseDto
+    public class ProjectTaskResponseDto : BaseDto
     {
         public int TaskId { get; set; }
         public int ProjectId { get; set; }

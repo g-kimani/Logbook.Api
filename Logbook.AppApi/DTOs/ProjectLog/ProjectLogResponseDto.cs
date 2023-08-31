@@ -1,6 +1,6 @@
 ﻿namespace Logbook.AppApi.DTOs.ProjectLog
 {
-    public class ProjectLogResponseDto
+    public class ProjectLogResponseDto : BaseDto
     {
         public int LogId { get; set; }
         public int ProjectId { get; set; }

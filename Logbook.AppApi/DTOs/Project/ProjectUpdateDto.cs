@@ -1,6 +1,6 @@
 ﻿namespace Logbook.AppApi.DTOs.Project
 {
-    public class ProjectUpdateDto
+    public class ProjectUpdateDto : BaseDto
     {
         public int ProjectId { get; set; }
         public required string Title { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace Logbook.AppApi.DTOs.ProjectGoal
 {
-    public class ProjectGoalResponseDto
+    public class ProjectGoalResponseDto : BaseDto
     {
         public int GoalId { get; set; }
         public int ProjectId { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Logbook.AppApi.DTOs
 {
-    public class ProjectResponseDto
+    public class ProjectResponseDto : BaseDto
     {
         public int ProjectId { get; set; }
         public required string Title { get; set; }

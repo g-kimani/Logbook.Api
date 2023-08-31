@@ -6,7 +6,7 @@ using Microsoft.Identity.Client;
 
 namespace Logbook.AppApi.DTOs.Project
 {
-    public class ProjectFullResponseDto
+    public class ProjectFullResponseDto : BaseDto
     {
         public int ProjectId { get; set; }
         public required string Title { get; set; }
@@ -16,7 +16,6 @@ namespace Logbook.AppApi.DTOs.Project
         public List<ProjectTaskResponseDto> Tasks { get; set; } = new List<ProjectTaskResponseDto>();
         public List<ProjectLogResponseDto> Logs { get; set; } = new List<ProjectLogResponseDto>();
         public List<ProjectGoalResponseDto> Goals { get; set; } = new List<ProjectGoalResponseDto>();
-        public DateTime LastActiveDate { get; set; }
         public DateTime CreatedDate { get; set; }
 
     }

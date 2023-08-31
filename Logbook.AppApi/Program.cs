@@ -1,4 +1,5 @@
 using Logbook.AppApi.Data;
+using Logbook.AppApi.Data.Filters;
 using Logbook.AppApi.Data.Models;
 using Logbook.AppApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -52,6 +53,7 @@ builder.Services.AddAutoMapper( typeof( Program ) );
 
 // Add services to the container.
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -63,8 +65,9 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var dataSeeder = new DataSeeder( dbContext );
-    dataSeeder.SeedData();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+    var dataSeeder = new DataSeeder( dbContext, userManager );
+    await dataSeeder.SeedData();
 }
 
 // Configure the HTTP request pipeline.
