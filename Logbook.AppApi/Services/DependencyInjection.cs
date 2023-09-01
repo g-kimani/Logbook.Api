@@ -8,6 +8,7 @@ namespace Logbook.AppApi.Services
         {
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IProjectLogService, ProjectLogService>();
+            services.AddScoped<IProjectGoalService, ProjectGoalService>();
         }
 
     }

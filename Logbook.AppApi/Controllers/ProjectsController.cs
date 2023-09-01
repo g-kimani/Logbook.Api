@@ -52,7 +52,7 @@ namespace Logbook.AppApi.Controllers
             return await ExecuteWithErrorHandling( async ( userId ) =>
             {
                 var response = await _projectService.Create( project, userId );
-                return CreatedAtAction( "CreateProject", new { id = response.ProjectId }, response );
+                return CreatedAtAction( "PostProject", new { id = response.ProjectId }, response );
             } );
         }
 

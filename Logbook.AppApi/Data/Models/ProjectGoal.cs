@@ -13,7 +13,7 @@ namespace Logbook.AppApi.Data.Models
         public string? Content { get; set; }
         public DateTime? TargetCompletion { get; set; }
         public bool? IsCompleted { get; set; } = false;
-        public DateTime CompletedDate { get; set; }
+        public DateTime? CompletedDate { get; set; }
         public string? CompletedNotes { get; set; }
         public Project? Project { get; set; }
         public ApplicationUser? User { get; set; }

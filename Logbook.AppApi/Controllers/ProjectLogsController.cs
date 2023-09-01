@@ -24,8 +24,7 @@ namespace Logbook.AppApi.Controllers
             return await ExecuteWithErrorHandling( async ( userId ) =>
             {
                 var response = await _projectLogService.Create( userId, dto );
-                //var response = new { User = 1, Game = 2 };
-                return Ok( response );
+                return CreatedAtAction( "PostProjectLog", new { id = response.LogId }, response );
             } );
         }
 
