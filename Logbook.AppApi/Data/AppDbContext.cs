@@ -24,6 +24,12 @@ namespace Logbook.AppApi.Data
                 .HasForeignKey( t => t.ProjectId )
                 .OnDelete( DeleteBehavior.NoAction );
 
+            builder.Entity<ProjectTask>()
+                .HasOne(t => t.ProjectLog)
+                .WithMany( t => t.Tasks )
+                .HasForeignKey(t => t.ProjectLogId)
+                .OnDelete( DeleteBehavior.NoAction );
+
             builder.Entity<ProjectGoal>()
                 .HasOne( g => g.Project )
                 .WithMany( p => p.Goals )
@@ -35,6 +41,8 @@ namespace Logbook.AppApi.Data
                 .WithMany( l => l.Logs )
                 .HasForeignKey( l => l.ProjectId )
                 .OnDelete( DeleteBehavior.NoAction );
+
+
         }
     }
 }

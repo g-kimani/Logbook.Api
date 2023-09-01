@@ -4,6 +4,7 @@ using Logbook.AppApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Logbook.AppApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230901104408_SingleLogForTasks")]
+    partial class SingleLogForTasks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,7 +246,7 @@ namespace Logbook.AppApi.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProjectLogId")
+                    b.Property<int>("ProjectLogId")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
@@ -461,7 +464,8 @@ namespace Logbook.AppApi.Migrations
                     b.HasOne("Logbook.AppApi.Data.Models.ProjectLog", "ProjectLog")
                         .WithMany("Tasks")
                         .HasForeignKey("ProjectLogId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("Logbook.AppApi.Data.Models.ApplicationUser", "User")
                         .WithMany()

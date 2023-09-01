@@ -80,7 +80,6 @@ namespace Logbook.AppApi.Data
                     Title = "Task 1 for Project 1",
                     Status = Models.TaskStatus.NotStarted,
                     DueDate = DateTime.Now.AddDays(5),
-                    Logs = _context.Logs.ToList(),
                     ProjectId = project.ProjectId,
                 }
             };

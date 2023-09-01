@@ -61,25 +61,48 @@ namespace Logbook.AppApi.Services
             return result;
         }
 
-        public Task<List<ProjectLogResponseDto>> GetLogsForProject( string userId, int projectId, ProjectLogRequestQuery query )
+        public async Task DeleteLog( string userId, int logId )
         {
-
-            throw new NotImplementedException();
+            var result = await _context.Logs
+                             .Where( l => l.UserId == userId && l.LogId == logId )
+                             .ExecuteDeleteAsync();
+            if (result == 0)
+            {
+                throw new NotFoundException( $"Log {logId} not found" );
+            }
         }
 
-        public Task<ProjectLogResponseDto> Delete( string userId, int logId )
+        public async Task<ProjectLogResponseDto> GetLogById( string userId, int logId )
         {
-            throw new NotImplementedException();
+            var result = await _context.Logs
+                            .Where(l => l.UserId == userId && l.LogId == logId)
+                            .FirstOrDefaultAsync();
+
+            if (result == null)
+            {
+                throw new NotFoundException( $"Log {logId} not found" );
+            }
+            return _mapper.Map<ProjectLogResponseDto>( result );
         }
 
-        public Task<ProjectLogResponseDto> GetLogById( string userId, int logId )
+        public async Task<ProjectLogResponseDto> Update( string userId, int logId, ProjectLogUpdateDto dto )
         {
-            throw new NotImplementedException();
-        }
+            var log = await _context.Logs
+                        .AsTracking()
+                        .Where( l => l.UserId == userId && l.LogId == logId )
+                        .FirstOrDefaultAsync();
 
-        public Task<ProjectLogResponseDto> Update( string userId, ProjectLogUpdateDto dto )
-        {
-            throw new NotImplementedException();
+            if (log == null)
+            {
+                throw new NotFoundException( $"Log {logId} not found" );
+            }
+
+            log.Title = dto.Title ?? log.Title;
+            log.Content = dto.Content ?? log.Content;
+
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<ProjectLogResponseDto>( log );
         }
     }
 }
