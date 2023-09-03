@@ -21,6 +21,12 @@ namespace Logbook.AppApi.Controllers
             {
                 return BadRequest();
             }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 return Ok( await action( userId ) );
