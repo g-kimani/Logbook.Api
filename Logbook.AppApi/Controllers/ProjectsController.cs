@@ -15,6 +15,7 @@ using Logbook.AppApi.Contracts.Services;
 using Logbook.AppApi.DTOs.Project;
 using System.Runtime.InteropServices;
 using Logbook.AppApi.DTOs.ProjectLog;
+using Logbook.AppApi.DTOs.ProjectGoal;
 
 namespace Logbook.AppApi.Controllers
 {
@@ -30,10 +31,9 @@ namespace Logbook.AppApi.Controllers
             _projectService = projectService;
         }
 
-        // GET: api/Projects
         [HttpGet]
         [ProducesResponseType( 200, Type = typeof( IEnumerable<ProjectResponseDto> ) )]
-        public async Task<IActionResult> GetProjects( [FromQuery] ProjectRequestQuery query)
+        public async Task<IActionResult> GetProjects( [FromQuery] ProjectRequestQuery query )
         {
             return await ExecuteWithErrorHandling( async ( userId ) =>
             {
@@ -42,9 +42,6 @@ namespace Logbook.AppApi.Controllers
             } );
         }
 
-
-        // POST: api/Projects
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [ProducesResponseType( 201, Type = typeof( ProjectResponseDto ) )]
         public async Task<IActionResult> PostProject( [FromBody] ProjectCreateDto project )
@@ -56,7 +53,6 @@ namespace Logbook.AppApi.Controllers
             } );
         }
 
-        // GET: api/Projects/5
         [HttpGet( "{id}" )]
         [ProducesResponseType( 200, Type = typeof( ProjectFullResponseDto ) )]
         public async Task<IActionResult> GetProject( int id )
@@ -68,8 +64,7 @@ namespace Logbook.AppApi.Controllers
             } );
         }
 
-        // PUT: api/Projects/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
         [HttpPatch( "{id}" )]
         [ProducesResponseType( 200, Type = typeof( ProjectResponseDto ) )]
         public async Task<IActionResult> PatchProject( int id, [FromBody] ProjectUpdateDto project )
@@ -82,9 +77,8 @@ namespace Logbook.AppApi.Controllers
             } );
         }
 
-        // DELETE: api/Projects/5
         [HttpDelete( "{id}" )]
-        [ProducesResponseType(204)]
+        [ProducesResponseType( 204 )]
         public async Task<IActionResult> DeleteProject( int id )
         {
             return await ExecuteWithErrorHandling( async ( userId ) =>
@@ -94,13 +88,24 @@ namespace Logbook.AppApi.Controllers
             } );
         }
 
-        [HttpGet("{id}/logs")]
-        [ProducesResponseType(200, Type = typeof( IEnumerable<ProjectLogResponseDto>))]
-        public async Task<IActionResult> GetProjectLogs(int id, [FromQuery] ProjectLogRequestQuery query )
+        [HttpGet( "{id}/logs" )]
+        [ProducesResponseType( 200, Type = typeof( IEnumerable<ProjectLogResponseDto> ) )]
+        public async Task<IActionResult> GetProjectLogs( int id, [FromQuery] ProjectLogRequestQuery query )
         {
             return await ExecuteWithErrorHandling( async ( userId ) =>
             {
                 var response = await _projectService.GetProjectLogs( userId, id, query );
+                return Ok( response );
+            } );
+        }
+
+        [HttpGet( "{id}/goals" )]
+        [ProducesResponseType( 200, Type = typeof( IEnumerable<ProjectGoalResponseDto> ) )]
+        public async Task<IActionResult> GetProjectGoals( int id, [FromQuery] ProjectGoalRequestQuery query )
+        {
+            return await ExecuteWithErrorHandling( async ( userId ) =>
+            {
+                var response = await _projectService.GetProjectGoals( userId, id, query );
                 return Ok( response );
             } );
         }

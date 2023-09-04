@@ -5,6 +5,7 @@ using Logbook.AppApi.Data;
 using Logbook.AppApi.Data.Models;
 using Logbook.AppApi.DTOs;
 using Logbook.AppApi.DTOs.Project;
+using Logbook.AppApi.DTOs.ProjectGoal;
 using Logbook.AppApi.DTOs.ProjectLog;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -181,6 +182,45 @@ namespace Logbook.AppApi.Services
             var result = _mapper.Map<List<ProjectLogResponseDto>>(logs);
             return result;
 
+        }
+
+        public async Task<List<ProjectGoalResponseDto>> GetProjectGoals(string userId, int projectId, ProjectGoalRequestQuery query )
+        {
+            var project = await _context.Projects
+                            .Where( p => p.UserId == userId && p.ProjectId == projectId )
+                            .Include(p => p.Goals)
+                            .FirstOrDefaultAsync();
+
+            if (project == null)
+            {
+                throw new NotFoundException( $"Project {projectId} not found" );
+            }
+
+            var goals = project.Goals.ToList();
+
+            if (goals.Count == 0)
+            {
+                return _mapper.Map<List<ProjectGoalResponseDto>>(goals);
+            }
+            switch (query.SortBy)
+            {
+                case "completed":
+                    goals = goals.OrderBy( l => l.CompletedDate ).ToList();
+                    break;
+                case "title":
+                    goals = goals.OrderBy( l => l.Title ).ToList();
+                    break;
+                default:
+                    goals = goals.OrderBy( l => l.CreatedDate ).ToList();
+                    break;
+            }
+            if (query.Order == "desc")
+            {
+                goals.Reverse();
+            }
+
+            var result = _mapper.Map<List<ProjectGoalResponseDto>>( goals );
+            return result;
         }
 
     }
